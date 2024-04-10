@@ -2,9 +2,17 @@ package org.mathieu.cleanrmapi.ui.screens.characterdetails
 
 import android.app.Application
 import org.koin.core.component.inject
+import org.mathieu.cleanrmapi.domain.models.character.Character
+import org.mathieu.cleanrmapi.domain.models.episode.Episode
 import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
+import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.ViewModel
+import org.mathieu.cleanrmapi.ui.screens.characters.CharactersAction
 
+
+sealed interface CharacterDetailsAction {
+    data class SelectedEpisode(val episode: Episode): CharacterDetailsAction
+}
 
 class CharacterDetailsViewModel(application: Application) : ViewModel<CharacterDetailsState>(CharacterDetailsState(), application) {
 
@@ -16,7 +24,7 @@ class CharacterDetailsViewModel(application: Application) : ViewModel<CharacterD
         ) {
 
             onSuccess {
-                updateState { copy(avatarUrl = it.avatarUrl, name = it.name, error = null) }
+                updateState { copy(avatarUrl = it.avatarUrl, name = it.name, episodes = it.episodes, error = null) }
             }
 
             onFailure {
@@ -27,7 +35,14 @@ class CharacterDetailsViewModel(application: Application) : ViewModel<CharacterD
         }
     }
 
+    fun handleAction(action: CharacterDetailsAction) {
+        when(action) {
+            is CharacterDetailsAction.SelectedEpisode -> selectedEpisode(action.episode)
+        }
+    }
 
+    private fun selectedEpisode(episode: Episode) =
+        sendEvent(Destination.EpisodeDetails(episode.id.toString()))
 }
 
 
@@ -35,5 +50,6 @@ data class CharacterDetailsState(
     val isLoading: Boolean = true,
     val avatarUrl: String = "",
     val name: String = "",
-    val error: String? = null
+    val error: String? = null,
+    val episodes : List<Episode> = emptyList()
 )

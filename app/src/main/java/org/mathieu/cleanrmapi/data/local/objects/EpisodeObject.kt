@@ -1,4 +1,39 @@
 package org.mathieu.cleanrmapi.data.local.objects
 
-class EpisodeObject {
-}
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import org.mathieu.cleanrmapi.data.local.RMDatabase
+import org.mathieu.cleanrmapi.data.remote.responses.EpisodeResponse
+import org.mathieu.cleanrmapi.domain.models.episode.Episode
+
+@Entity(tableName = RMDatabase.EPISODE_TABLE)
+class EpisodeObject(
+    @PrimaryKey
+    val id: Int,
+    val name : String,
+    val airDate : String,
+    val episode : String,
+    val url : String,
+)
+
+/**
+ * Convert a [EpisodeResponse] to a [EpisodeObject]
+ */
+internal fun EpisodeResponse.toRoomObject() = EpisodeObject(
+    id = id,
+    name = name,
+    airDate = air_date,
+    episode = episode,
+    url = url
+)
+
+/**
+ * Convert a [EpisodeObject] to a [Episode]
+ **/
+internal fun EpisodeObject.toModel() = Episode(
+    id = id,
+    name = name,
+    airDate = airDate,
+    episode = episode,
+    url = url
+)

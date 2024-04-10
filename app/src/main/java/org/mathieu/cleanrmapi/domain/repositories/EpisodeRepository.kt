@@ -1,7 +1,20 @@
 package org.mathieu.cleanrmapi.domain.repositories
 
-class EpisodeRepository {
-    interface EpisodeRepository {
-        suspend fun getEpisodes(): List<Episode>
-    }
+import org.mathieu.cleanrmapi.domain.models.episode.Episode
+
+interface EpisodeRepository {
+
+    /**
+     * Get all episodes for a character
+     * @param characterId the character id
+     * @return the list of episodes
+     */
+    suspend fun getEpisodes(characterId : Int): List<Episode>
+
+    /**
+     * Get an episode by its id
+     * @param episodeId the episode id
+     * @return the episode
+     */
+    suspend fun getEpisode(episodeId : Int): Episode?
 }
